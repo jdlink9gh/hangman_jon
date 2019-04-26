@@ -7,7 +7,7 @@ class Hangman():
         self.wordList = []  # list of hangman target words
         self.url = 'http://norvig.com/ngrams/sowpods.txt'  # url to for text file
         import string
-        self.validLetters = list(string.ascii_uppercase)  # create a list of valid letters
+        self.validLetters = list(string.ascii_uppercase)
 
     def checkFile (self):
         # returns the filepath of the sowpods.txt file
@@ -56,12 +56,83 @@ class Hangman():
             except ValueError:
                 print('Please choose an integer')
             else:
-                gameReady = True # no errors? then the game is ready!
+                gameReady = True  # no errors? then the game is ready!
         wordList = self.trimList(minLength)  # create a wordList using the minLength
-        targetWord = self.pickTarget(wordList)
-        return targetWord
+        target = self.pickTarget(wordList)
+        return target
 
+    def showBoard(self):
+        if self.hangmanState == 6:
+            print('  |‾‾‾‾‾‾‾|')
+            print('  |      ')
+            print('  |      ')
+            print('  |      ')
+            print('__|__\n')
+        if self.hangmanState == 5:
+            print('  |‾‾‾‾‾‾‾|')
+            print('  |     0')
+            print('  |      ')
+            print('  |      ')
+            print('__|__\n')
+        if self.hangmanState == 4:
+            print('  |‾‾‾‾‾‾‾|')
+            print('  |     0')
+            print('  |    / ')
+            print('  |      ')
+            print('__|__\n')
+        if self.hangmanState == 3:
+            print('  |‾‾‾‾‾‾‾|')
+            print('  |     0')
+            print('  |    /| ')
+            print('  |      ')
+            print('__|__\n')
+        if self.hangmanState == 2:
+            print('  |‾‾‾‾‾‾‾|')
+            print('  |     0')
+            print('  |    /|\ ')
+            print('  |      ')
+            print('__|__\n')
+        if self.hangmanState == 1:
+            print('  |‾‾‾‾‾‾‾|')
+            print('  |     0')
+            print("  |    /|\ ")
+            print('  |    /' )
+            print('__|__\n')
+        if self.hangmanState <= 0:
+            print('  |‾‾‾‾‾‾‾|')
+            print('  |     0')
+            print("  |    /|\ ")
+            print("  |    /'\ ")
+            print('__|__\n')
 
+    def playGame(self):
+        import numpy as np
+        target = self.setupGame()  # specify target word with setupGame
+        targetSplit = np.array(list(target))  # created for finding correct guesses
+        maskedSplit = np.array(['_' for letter in list(target)])  # created to show state of hangman game
+
+        while self.hangmanState > 0:
+            self.showBoard() # start off by showing state of hangman
+            letterGuess = input('Guess a letter ')
+            if letterGuess.upper() in self.validLetters:
+                if letterGuess.upper() in self.guessedLetters:
+                    self.hangmanState -= 1  # decrement for repeated guess
+                    print('Already guessed this letter')
+                else:
+                    if letterGuess.upper() in targetSplit:
+                        validSpots = np.where(targetSplit == letterGuess.upper())  # all indices of match
+                        self.guessedLetters.append(letterGuess)
+                        for index in validSpots:
+                            maskedSplit[index] = letterGuess.upper()  # replace masked spot with letter
+                    else:
+                        self.hangmanState -= 1  # decrement hangman state for incorrect guess
+                        print('Incorrect guess')
+                        self.guessedLetters.append(letterGuess.upper())
+            else:
+                print('Invalid input, guess a letter')
+        else:
+            print('Game Over!')
+            self.showBoard()
 
         # while self.hangmanState > 0:  # ask for guesses anc compare until game is over
         #     guess = input('Guess a letter ')  # intake letter from
@@ -72,3 +143,5 @@ class Hangman():
         #         self.guessedLetters.append(guess)  # add guess to guessed list
 
 
+mygame = Hangman()
+mygame.playGame()
