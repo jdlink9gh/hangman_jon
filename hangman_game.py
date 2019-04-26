@@ -4,6 +4,7 @@ class Hangman():
         self.gameState = 1  # initialize state of game, 1 means on going, 0 means GAME OVER BITCH
         self.hangmanState = 6  # used to inform hangman display
         self.guessedLetters = []  # list to store guessed letters
+        self.wordList = []  # list of hangman target words
         self.url = 'http://norvig.com/ngrams/sowpods.txt'  # url to for text file
 
     def checkFile (self):
@@ -31,4 +32,18 @@ class Hangman():
             wordList = f.readlines()  # use readlines to create list of words
             wordList = [word.strip('\n') for word in wordList]  # take out whitespace characters
         return wordList  # return list of words
+
+    def trimList(self, minLength):
+        # minLength represents minimum string length
+        self.wordList = self.openFile()  # populate wordList with openFile which
+        self.wordList = [word for word in self.wordList if len(word) >= minLength]
+        return self.wordList
+
+    def pickTarget(self, wordList):
+        #  select a random value from a list
+        import random
+        target = random.choice(wordList)  # select a random value
+        return target
+
+
 
