@@ -1,11 +1,13 @@
 
 class Hangman():
     def __init__(self):
-        self.gameState = 1  # initialize state of game, 1 means on going, 0 means GAME OVER BITCH
+        self.gameState = 1  # initialize state of game, 1 means on going, 0 means GAME OVER
         self.hangmanState = 6  # used to inform hangman display
         self.guessedLetters = []  # list to store guessed letters
         self.wordList = []  # list of hangman target words
         self.url = 'http://norvig.com/ngrams/sowpods.txt'  # url to for text file
+        import string
+        self.validLetters = list(string.ascii_uppercase)  # create a list of valid letters
 
     def checkFile (self):
         # returns the filepath of the sowpods.txt file
@@ -45,5 +47,28 @@ class Hangman():
         target = random.choice(wordList)  # select a random value
         return target
 
+    def setupGame(self):
+        gameReady = False
+        while not gameReady:
+            minLength = input('Choose a minimum word length ')
+            try:
+                minLength = int(minLength)  # convert value into integer
+            except ValueError:
+                print('Please choose an integer')
+            else:
+                gameReady = True # no errors? then the game is ready!
+        wordList = self.trimList(minLength)  # create a wordList using the minLength
+        targetWord = self.pickTarget(wordList)
+        return targetWord
+
+
+
+        # while self.hangmanState > 0:  # ask for guesses anc compare until game is over
+        #     guess = input('Guess a letter ')  # intake letter from
+        #     if guess in self.guessedLetters:
+        #         print('Already guessed this letter')
+        #         self.hangmanState -= 1  # incorrect guess, decrement hangmanState
+        #     else:
+        #         self.guessedLetters.append(guess)  # add guess to guessed list
 
 
