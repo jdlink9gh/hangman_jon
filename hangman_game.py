@@ -102,8 +102,11 @@ class Hangman():
             print('  |‾‾‾‾‾‾‾|')
             print('  |     0')
             print("  |    /|\ ")
-            print("  |    /'\ ")
+            print("  |    / \ ")
             print('__|__\n')
+
+    def showSplit(self, array):
+        print(' '.join(array))  # format output for hangman
 
     def playGame(self):
         import numpy as np
@@ -112,7 +115,9 @@ class Hangman():
         maskedSplit = np.array(['_' for letter in list(target)])  # created to show state of hangman game
 
         while self.hangmanState > 0:
-            self.showBoard() # start off by showing state of hangman
+            self.showBoard()  # start off by showing state of hangman
+            self.showSplit(maskedSplit)  # display state of board
+            print(target)  # used for debugging
             letterGuess = input('Guess a letter ')
             if letterGuess.upper() in self.validLetters:
                 if letterGuess.upper() in self.guessedLetters:
@@ -121,9 +126,14 @@ class Hangman():
                 else:
                     if letterGuess.upper() in targetSplit:
                         validSpots = np.where(targetSplit == letterGuess.upper())  # all indices of match
-                        self.guessedLetters.append(letterGuess)
+                        self.guessedLetters.append(letterGuess.upper())  # add guess to list of guesses
                         for index in validSpots:
                             maskedSplit[index] = letterGuess.upper()  # replace masked spot with letter
+                        if '_' not in maskedSplit:
+                            print('You won the game!')
+                            self.showSplit(maskedSplit)  # show the completed word
+                            self.showBoard()
+                            break  # exit the game since word was correctly guessed
                     else:
                         self.hangmanState -= 1  # decrement hangman state for incorrect guess
                         print('Incorrect guess')
@@ -132,15 +142,9 @@ class Hangman():
                 print('Invalid input, guess a letter')
         else:
             print('Game Over!')
-            self.showBoard()
-
-        # while self.hangmanState > 0:  # ask for guesses anc compare until game is over
-        #     guess = input('Guess a letter ')  # intake letter from
-        #     if guess in self.guessedLetters:
-        #         print('Already guessed this letter')
-        #         self.hangmanState -= 1  # incorrect guess, decrement hangmanState
-        #     else:
-        #         self.guessedLetters.append(guess)  # add guess to guessed list
+            self.showSplit(maskedSplit)  # show the masked split
+            self.showBoard()  #  show the board
+            print('Correct word was {}'.format(target))  # tell user what correct word was 
 
 
 mygame = Hangman()
