@@ -10,20 +10,26 @@ when either of the following conditions are met:
 
 ### Calling the game
 Users call the game from the command line by entering the directory of the hangman_game.py file. Then, enter the
-following command: hangman_game.py -l integer
+following command: 
 
-If the user needs help, they can use the following command: hangman_game.py -h
-
+```editorconfig
+python hangman_game.py -len integer
+```
+If the user needs help, they can use the following command: 
+```editorconfig
+python hangman_game.py -h
+```
 ### Structure of the Code
 
-Hangman is defined as a class within the code with various objects and methods. A quick explanation of each is below.
+Hangman is defined as a class within the code with various properties and methods. A quick explanation of each is below.
 
-#### Objects
+#### Properties 
 - self.hangmanState: integer, denotes how many incorrect guesses a user is allowed, once it reaches 0 the user loses
 - self.guessedLetters: list, stores the guessed letters within the game, initialized as an empty list
 - self.wordList: list, list of target words for hangman game 
-- self.url = str, 'http://norvig.com/ngrams/sowpods.txt' is the url which stores a text file
-- self.validLetters = list, list of uppercase letters which represent valid guesses  
+- self.url: string, 'http://norvig.com/ngrams/sowpods.txt' is the url which stores a text file
+- self.validLetters: list, list of uppercase letters which represent valid guesses 
+- self.minLength: integer, minimum length for the target word 
 
 #### Methods
 - __init__(self): initializes the class with the objects above 

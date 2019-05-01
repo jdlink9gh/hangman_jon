@@ -6,8 +6,6 @@ import os
 import random
 import string
 
-# create hangman class
-
 class Hangman():
     def __init__(self):
         self.hangmanState = 6  # used to inform hangman display
@@ -44,7 +42,6 @@ class Hangman():
         return target
 
     def showBoard(self):
-        print('{} remaining guesses'.format(self.hangmanState))
         print('  |‾‾‾‾|')  # print line 1 of 5
         if self.hangmanState <= 5:
             print('  |    0')  # print line 2 of 5
@@ -79,10 +76,10 @@ class Hangman():
         targetSplit = np.array(list(target))  # created for finding correct guesses
         maskedSplit = np.array(['_' for letter in list(target)])  # created to show state of hangman game
 
-        while self.hangmanState > 0:
+        while 0 < self.hangmanState <= 6:
             self.showBoard()  # start off by showing state of hangman
             self.showSplit(maskedSplit)  # display state of board
-            # print(target)  # used for debugging
+            print(target)  # used for debugging
             letterGuess = input('Guess a letter ')
             if letterGuess.upper() in self.validLetters:
                 if letterGuess.upper() in self.guessedLetters:
@@ -98,14 +95,14 @@ class Hangman():
                             print('You won the game!')
                             self.showSplit(maskedSplit)  # show the completed word
                             self.showBoard()
-                            self.hangmanState = -1  # exit the game since word was correctly guessed
+                            self.hangmanState = 7  # exit the game since word was correctly guessed
                     else:
                         self.hangmanState -= 1  # decrement hangman state for incorrect guess
                         print('Incorrect guess')
                         self.guessedLetters.append(letterGuess.upper())
             else:
                 print('Invalid input, guess a letter')
-        else:
+        if self.hangmanState == 0:  # condition for losing the game
             print('Game Over!')
             self.showSplit(maskedSplit)  # show the masked split
             self.showBoard()  #  show the board
@@ -115,7 +112,7 @@ class Hangman():
 
 def main():
     parser = argparse.ArgumentParser(description='Input a minimum word length for hangman')  # create object
-    parser.add_argument("-l", '--minLength', type=int, required=True,
+    parser.add_argument("-len", '--minLength', type=int, required=True,
                         help='Minimum word length for hangman target word \n'
                              'largest value is 15 characters')  # add minLength argument
     args = parser.parse_args()  # parse the arguments
