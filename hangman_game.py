@@ -68,7 +68,7 @@ class Hangman():
         else:
             for i in range(3):
                 print('  |      ')
-        print('__|__\n')  
+        print('__|__\n')
 
 
     def showSplit(self, array):
