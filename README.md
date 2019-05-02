@@ -1,60 +1,55 @@
 # hangman_jon
-For this exercise, we wil be using, github, markdown and python to create a hangman game.
-### Steps
-Here are the steps you will need to follow:
-1) Create a new branch off of the 'development' branch of your repository.
-2) Create your hangman game using a class called 'Hangman'
-    - This class may have many member variables and functions to accomplish your task 
-3) Define a "main" function to drive your game
-4) Call main by using the the code:
-```
-if __name__ == "__main__":
-    main()
-```
-5) Create a readme file using markdown to describe how your game works
-    - include a description of your code
-    - include any inputs or outputs you may use along with their descriptions
-    - include a description of how to operate/call your game
-6) Please add and commit your code (using the -m flag to provide a description) periodically to keep track of your 
-status. Please push your code at milestones. You can push multiple commits at the same time.
-7) Once your code is ready for review, please initiate a merge request of your branch back into development. Assign Jack
-Linkous (jdlink9gh) as the reviewer.
 
-### Inputs and Outputs
-#### Inputs
-- The function should take in a parameter from the command line using the 'argparse' module
-- This input should be the minimum length of word you would like to guess during your game
-- Please use a description to provide the user general information on you program as well as the help variable on your 
- arguments to provide info on the particular flags. This information will be displayed if the user uses the '-h' flag.
-#### Outputs
-- The only output to this program will be if there is no locally stored word file. we will discuss how this word file is 
-obtained below, but if the file does not exists please have your code create a folder called 'word_data' and store the
-file as words.txt.
-- Be sure this file is not uploaded to the git repo, as we do not want to add anything to our repo besides code.
-### Hangman
-- This code will operate a game of hangman.
-- The code will first check to see if a file is stored locally and open it.
-- If not it will go up to http://norvig.com/ngrams/sowpods.txt and download the data.
-- You code should then parse this data into a list and store the data in the aforementioned location.
-- The program will then choose a word at random that is at least as long as the minimum length specified by the input 
-argument.
-- The code will loop until the word is either guessed correctly or the player has run of body parts.
-- The loop will display:
-    - The current state of the hangman
-    - The current state of the word, with '_' used as unguessed letters
-    - The letters available to choose
-    - Ask the user to choose a letter
-    - Notify the user if the letter is in the word, if it is not in the word, if the user has already guessed the
-    letter, if the input is more than one character, or if the chosen value is not a letter
-    - If the letter is wrong, or it has already been guessed, update the hangman, and restart the loop
-    - If the value is not a letter, or if the value is more than one character, do not penalize the user, but restart the loop
-    - If the letter is correct, update the guess and restart the loop 
-- A full hangman (a loss) will display as (use this as a guide):
+### Overview
+Hangman is a game where a user will attempt to guess a 'masked' word letter by letter. For each correct guess, all the
+spots with a match are revealed. For each incorrect guess, a 'body part' is added to the hangman. The game is complete
+when either of the following conditions are met: 
+
+1. The user has correctly guessed the word and no hidden characters are left 
+2. The user has exhausted all their guesses and a full hangman is shown 
+
+### Calling the game
+Users call the game from the command line by entering the directory of the hangman_game.py file. Then, enter the
+following command: 
+
+```editorconfig
+python hangman_game.py -len integer
 ```
-|‾‾‾‾‾‾‾|
-|       O
-|      /|\
-|      / \
-|
+If the user needs help, they can use the following command: 
+```editorconfig
+python hangman_game.py -h
 ```
-- Upon the end of the game, notify the user what the word was and tell them whether they won or lost
+### Structure of the Code
+
+Hangman is defined as a class within the code with various properties and methods. A quick explanation of each is below.
+
+#### Properties 
+- self.hangmanState: integer, denotes how many incorrect guesses a user is allowed, once it reaches 0 the user loses
+- self.guessedLetters: list, stores the guessed letters within the game, initialized as an empty list
+- self.wordList: list, list of target words for hangman game 
+- self.url: string, 'http://norvig.com/ngrams/sowpods.txt' is the url which stores a text file
+- self.validLetters: list, list of uppercase letters which represent valid guesses 
+- self.minLength: integer, minimum length for the target word 
+
+#### Methods
+- __init__(self): initializes the class with the objects above 
+- checkFile(self): returns the filepath of a downloaded text file, if the file is not present, download the file
+- setupGame(self): returns the word to be guessed (target word) by: 
+    - Calling checkFile to obtain a file path
+    - Opening the file and converting it into a list
+    - Trimming the list to words that have length >= self.minLength
+    - Selecting a word from the trimmed at random 
+- showBoard(self): prints the hangman board according to the self.hangmanState
+- showSplit(self, array): joins an array with spaces in between, used to format the target word and guessed letters
+- playGame(self): logic for the hangman game, calls the setupGame method to pick a target word
+    - The playGame(self) method also creates an array of the target word as well as a masked array, which is simply
+        each letter replaced by an underscore 
+    - Users are prompted to guess a letter, which is checked to see if it has been previously guessed and if the 
+        letter is in the target word 
+    - If the letter is within the word and not a repeated guess, the masked array's underscores are replaced by the 
+        letter and the user is prompted for another letter 
+    - If the letter has already been guessed or it is not in the target word, the user is 'penalized' with a body 
+        part 'drawn' on the hangman and the user is prompted for another letter
+    - This process repeats until either of the conditions in the overview section are met
+- main(): used to drive the hangman game, when the file is called from the command line, main instantiates 
+    the Hangman class and sets the self.minLength object to value entered from the user using the argparse module 
